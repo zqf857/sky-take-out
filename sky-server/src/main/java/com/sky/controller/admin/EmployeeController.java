@@ -138,6 +138,7 @@ public class EmployeeController {
     @ApiOperation(value = "根据id查询员工")
     public Result<Employee> getById(@PathVariable Long id){
         Employee employee = employeeService.getById(id);
+//        log.info("正在根据id查询员工: {}", employee);
         return Result.success(employee);
     }
 }
