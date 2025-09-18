@@ -145,4 +145,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeMapper.getById(id);
         return employee;
     }
+
+    /**
+     * 编辑员工信息
+     * @param employee
+     */
+    public void modify(Employee employee) {
+        employeeMapper.update(employee);
+    }
 }

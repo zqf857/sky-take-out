@@ -124,6 +124,8 @@ public class EmployeeController {
     @PutMapping
     @ApiOperation(value = "编辑员工信息")
     public Result modify(@RequestBody Employee employee){
+//        log.info("employee: {}",employee);
+        employeeService.modify(employee);
         return Result.success();
     }
 
