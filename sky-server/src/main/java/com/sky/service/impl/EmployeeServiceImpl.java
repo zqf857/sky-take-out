@@ -155,6 +155,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employee.setUpdateTime(LocalDateTime.now());
         employee.setUpdateUser(BaseContext.getCurrentId());
+        // 防止传密码过来更改员工密码
+        employee.setPassword(null);
 
         employeeMapper.update(employee);
     }
