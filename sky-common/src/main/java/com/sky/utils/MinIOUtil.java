@@ -2,12 +2,16 @@ package com.sky.utils;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import io.minio.errors.MinioException;
+import io.minio.errors.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Data
 @AllArgsConstructor
@@ -19,44 +23,56 @@ public class MinIOUtil {
     private String secretKey;
     private String bucketName;
 
-    /**
-     * 文件上传
-     *
-     * @param bytes      文件字节数组
-     * @param objectName Minio中的对象名
-     * @return 文件访问路径
-     */
-    public String upload(byte[] bytes, String objectName) {
-        try {
-            // 创建 MinioClient
-            MinioClient minioClient = MinioClient.builder()
-                    .endpoint(url)
-                    .credentials(accessKey, secretKey)
-                    .build();
+    private MinioClient minioClient;
 
-            // 上传文件
+    public MinIOUtil(String url, String accessKey, String secretKey, String bucketName){
+        this.url = url;
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.bucketName = bucketName;
+
+        this.minioClient = MinioClient.builder()
+                .endpoint(url)
+                .credentials(accessKey, secretKey)
+                .build();
+    }
+
+    /**
+     * 上传文件
+     * @param file
+     * @param objectName
+     * @return
+     */
+    public String upload(MultipartFile file, String objectName) {
+        try {
             minioClient.putObject(
                     PutObjectArgs.builder()
                             .bucket(bucketName)
                             .object(objectName)
-                            .stream(new ByteArrayInputStream(bytes), bytes.length, -1)
-                            .contentType("application/octet-stream") // 可根据文件类型修改
+                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .contentType(file.getContentType())
                             .build()
             );
-
-            // Minio 访问路径规则 http://url/bucketName/objectName
-            String fileUrl = String.format("%s/%s/%s", url, bucketName, objectName);
-
-            log.info("文件上传到: {}", fileUrl);
-
-            return fileUrl;
-
-        } catch (MinioException e) {
-            log.error("上传到 MinIO 出错: {}", e.getMessage(), e);
-            throw new RuntimeException("Minio 文件上传失败", e);
-        } catch (Exception e) {
-            log.error("上传到 MinIO 出现异常: {}", e.getMessage(), e);
-            throw new RuntimeException("Minio 文件上传失败", e);
+            log.info("文件上传成功: {}/{}", bucketName, objectName);
+            return url + "/" + bucketName + "/" + objectName;
+        } catch (ErrorResponseException e) {
+            throw new RuntimeException(e);
+        } catch (InsufficientDataException e) {
+            throw new RuntimeException(e);
+        } catch (InternalException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidResponseException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (ServerException e) {
+            throw new RuntimeException(e);
+        } catch (XmlParserException e) {
+            throw new RuntimeException(e);
         }
     }
 }

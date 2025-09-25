@@ -7,7 +7,7 @@ sky:
     username: root
     password: Dr.P3pper!
   minio:
-    url: localhost:9000
+    url: http://localhost:9000
     secret-key: Weak123$
     bucket-name: sky-itcast
     access-key: zqf857
