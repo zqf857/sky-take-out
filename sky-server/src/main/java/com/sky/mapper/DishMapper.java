@@ -45,6 +45,10 @@ public interface DishMapper {
     Dish getById(Long id);
 
     /**
+     * 根据主键查询菜品口味
+     */
+
+    /**
      * 根据主键删除菜品数据
      * @param id
      */
