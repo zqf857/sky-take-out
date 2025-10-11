@@ -30,10 +30,4 @@ public interface DishFlavorMapper {
      */
     @Select("select * from dish_flavor where dish_id = #{dishId}")
     List<DishFlavor> getById(Long dishId);
-
-    /**
-     * 修改菜品口味
-     * @param flavors
-     */
-    void updateBatch(List<DishFlavor> flavors);
 }
