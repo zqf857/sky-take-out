@@ -8,6 +8,7 @@ import com.sky.dto.DishDTO;
 import com.sky.dto.DishPageQueryDTO;
 import com.sky.entity.Dish;
 import com.sky.entity.DishFlavor;
+import com.sky.exception.BaseException;
 import com.sky.exception.DeletionNotAllowedException;
 import com.sky.mapper.DishFlavorMapper;
 import com.sky.mapper.DishMapper;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -99,5 +101,22 @@ public class DishServiceImpl implements DishService {
             // 删除口味
             dishFlavorMapper.deleteByDishId(id);
         }
+    }
+
+    /**
+     * 菜品启用禁用
+     * @param status
+     * @param id
+     */
+    public void startOrStop(Integer status, Long id) {
+        // 当前菜品是否被其他套餐关联
+        List<Long> setmealIds = setmealDishMapper.getSetmealIdsByDishIds(Collections.singletonList(id));
+        if(setmealIds != null && setmealIds.size() > 0){
+            throw new BaseException(MessageConstant.DISH_BE_RELATED_BY_SETMEAL);
+        }
+        Dish dish = new Dish();
+        dish.setStatus(status);
+        dish.setId(id);
+        dishMapper.update(dish);
     }
 }
