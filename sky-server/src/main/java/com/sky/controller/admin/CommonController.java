@@ -1,5 +1,6 @@
 package com.sky.controller.admin;
 
+import com.sky.constant.MessageConstant;
 import com.sky.result.Result;
 import com.sky.utils.MinIOUtil;
 import io.swagger.annotations.Api;
@@ -35,15 +36,20 @@ public class CommonController {
     public Result<String> upload(@RequestBody MultipartFile file){
         log.info("文件上传: {}", file);
 
-        // 原始文件名
-        String originalFilename = file.getOriginalFilename();
-        // 截取原始文件名的后缀拓展名
-        String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-        String objectName = UUID.randomUUID().toString() + extension;
+        try {
+            // 原始文件名
+            String originalFilename = file.getOriginalFilename();
+            // 截取原始文件名的后缀拓展名
+            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            String objectName = UUID.randomUUID().toString() + extension;
 
-        // 文件的请求路径
-        String filePath = minIOUtil.upload(file, objectName);
-        return Result.success(filePath);
+            // 文件的请求路径
+            String filePath = minIOUtil.upload(file, objectName);
+            return Result.success(filePath);
 
+        } catch (RuntimeException e) {
+            log.error("文件上传失败: {}", e);
+        }
+        return Result.error(MessageConstant.UPLOAD_FAILED);
     }
 }
