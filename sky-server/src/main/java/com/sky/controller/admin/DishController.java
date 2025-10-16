@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -103,5 +104,18 @@ public class DishController {
         log.info("修改菜品: {}", dishDTO);
         dishService.modifyWithFlavor(dishDTO);
         return Result.success();
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据categoryId查询菜品")
+    public Result selectByCategoryId(Long categoryId){
+        log.info("根据分类id查询菜品: {}", categoryId);
+        List<DishVO> list = dishService.selectByCategoryId(categoryId);
+        return Result.success(list);
     }
 }
