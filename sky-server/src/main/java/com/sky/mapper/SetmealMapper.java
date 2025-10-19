@@ -10,6 +10,8 @@ import com.sky.vo.SetmealVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 @Mapper
 public interface SetmealMapper {
 
@@ -42,4 +44,18 @@ public interface SetmealMapper {
      */
     @Select("select setmeal.*, category.name as categoryName from setmeal left join category on setmeal.category_id = category.id")
     SetmealVO selectById(Long id);
+
+    /**
+     * 根据套餐id查询套餐status
+     * @param id
+     * @return
+     */
+    @Select("select status from setmeal where id = #{id}")
+    Integer selectStatusById(Long id);
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
+    void deleteByIds(List<Long> ids);
 }

@@ -27,4 +27,10 @@ public interface SetmealDishMapper {
      * @return
      */
     List<SetmealDish> selectBySetmealId(Long setmealId);
+
+    /**
+     * 根据setmealIds 删除套餐对应菜品
+     * @param ids
+     */
+    void deleteBySetmealIds(List<Long> setmealIds);
 }

@@ -4,6 +4,7 @@ import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.dto.SetmealDTO;
 import com.sky.result.PageResult;
 import com.sky.vo.SetmealVO;
+import java.util.List;
 
 public interface SetmealService {
 
@@ -26,4 +27,10 @@ public interface SetmealService {
      * @return
      */
     SetmealVO selectById(Long id);
+
+    /**
+     * 批量删除套餐
+     * @param ids
+     */
+    void deleteByIds(List<Long> ids);
 }

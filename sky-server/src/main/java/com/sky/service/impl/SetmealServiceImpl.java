@@ -3,6 +3,7 @@ package com.sky.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.constant.StatusConstant;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.dto.SetmealDTO;
 import com.sky.entity.Setmeal;
@@ -83,5 +84,28 @@ public class SetmealServiceImpl implements SetmealService {
 
         setmealVO.setSetmealDishes(setmealDishes);
         return setmealVO;
+    }
+
+
+    /**
+     * 删除套餐
+     * @param ids
+     */
+    @Transactional
+    public void deleteByIds(List<Long> ids) {
+
+        // 查看套餐是否是启用状态
+        for (Long id : ids){
+            Integer status = setmealMapper.selectStatusById(id);
+            if(status == null || status != StatusConstant.DISABLE){
+                throw new BaseException(MessageConstant.SETMEAL_ON_SALE);
+            }
+        }
+
+        // 删除套餐
+        setmealMapper.deleteByIds(ids);
+
+        // 删除套餐对应菜品
+        setmealDishMapper.deleteBySetmealIds(ids);
     }
 }
