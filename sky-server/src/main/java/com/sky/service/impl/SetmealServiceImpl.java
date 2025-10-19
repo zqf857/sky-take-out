@@ -1,13 +1,18 @@
 package com.sky.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
+import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.dto.SetmealDTO;
 import com.sky.entity.Setmeal;
 import com.sky.entity.SetmealDish;
 import com.sky.exception.BaseException;
 import com.sky.mapper.SetmealDishMapper;
 import com.sky.mapper.SetmealMapper;
+import com.sky.result.PageResult;
 import com.sky.service.SetmealService;
+import com.sky.vo.SetmealVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,5 +56,16 @@ public class SetmealServiceImpl implements SetmealService {
         }
 
         setmealDishMapper.save(setmealDishes);
+    }
+
+    /**
+     * 套餐分类查询
+     * @param categoryPageQueryDTO
+     * @return
+     */
+    public PageResult pageQuery(CategoryPageQueryDTO categoryPageQueryDTO) {
+        PageHelper.startPage(categoryPageQueryDTO.getPage(), categoryPageQueryDTO.getPageSize());
+        Page<SetmealVO> page = setmealMapper.pageQuery(categoryPageQueryDTO);
+        return new PageResult(page.getTotal(), page.getResult());
     }
 }
