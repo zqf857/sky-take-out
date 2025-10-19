@@ -68,4 +68,20 @@ public class SetmealServiceImpl implements SetmealService {
         Page<SetmealVO> page = setmealMapper.pageQuery(categoryPageQueryDTO);
         return new PageResult(page.getTotal(), page.getResult());
     }
+
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
+    @Transactional
+    public SetmealVO selectById(Long id) {
+
+        SetmealVO setmealVO = setmealMapper.selectById(id);
+
+        List<SetmealDish> setmealDishes = setmealDishMapper.selectBySetmealId(id);
+
+        setmealVO.setSetmealDishes(setmealDishes);
+        return setmealVO;
+    }
 }

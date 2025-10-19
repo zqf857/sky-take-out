@@ -34,4 +34,12 @@ public interface SetmealMapper {
      * @return
      */
     Page<SetmealVO> pageQuery(CategoryPageQueryDTO categoryPageQueryDTO);
+
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
+    @Select("select setmeal.*, category.name as categoryName from setmeal left join category on setmeal.category_id = category.id")
+    SetmealVO selectById(Long id);
 }
