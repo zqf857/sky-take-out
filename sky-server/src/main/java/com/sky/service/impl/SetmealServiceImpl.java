@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -83,6 +85,7 @@ public class SetmealServiceImpl implements SetmealService {
         List<SetmealDish> setmealDishes = setmealDishMapper.selectBySetmealId(id);
 
         setmealVO.setSetmealDishes(setmealDishes);
+
         return setmealVO;
     }
 
@@ -107,5 +110,47 @@ public class SetmealServiceImpl implements SetmealService {
 
         // 删除套餐对应菜品
         setmealDishMapper.deleteBySetmealIds(ids);
+    }
+
+    /**
+     * 修改套餐
+     * @param setmealDTO
+     */
+    @Transactional
+    public void update(SetmealDTO setmealDTO) {
+        Setmeal setmeal = new Setmeal();
+        BeanUtils.copyProperties(setmealDTO, setmeal);
+
+        // 更新套餐
+        setmealMapper.update(setmeal);
+
+        // 更新套餐对应菜品
+        List<Long> setmealIds = Collections.singletonList(setmeal.getId());
+        setmealDishMapper.deleteBySetmealIds(setmealIds);
+
+        List<SetmealDish> setmealDishes = setmealDTO.getSetmealDishes();
+
+        if(setmealDishes.isEmpty() || setmeal.getId() == null){
+            throw new BaseException(MessageConstant.UNKNOWN_ERROR);
+        }
+
+        // 插入套餐id
+        for(SetmealDish setmealDish : setmealDishes){
+            setmealDish.setSetmealId(setmeal.getId());
+        }
+
+        setmealDishMapper.save(setmealDishes);
+    }
+
+    /**
+     * 套餐起售、停售
+     * @param status
+     * @param id
+     */
+    public void startOrStop(Integer status, Long id) {
+        Setmeal setmeal = new Setmeal();
+        setmeal.setStatus(status);
+        setmeal.setId(id);
+        setmealMapper.update(setmeal);
     }
 }

@@ -42,7 +42,6 @@ public interface SetmealMapper {
      * @param id
      * @return
      */
-    @Select("select setmeal.*, category.name as categoryName from setmeal left join category on setmeal.category_id = category.id")
     SetmealVO selectById(Long id);
 
     /**
@@ -58,4 +57,11 @@ public interface SetmealMapper {
      * @param ids
      */
     void deleteByIds(List<Long> ids);
+
+    /**
+     * 修改套餐
+     * @param setmeal
+     */
+    @AutoFill(OperationType.UPDATE)
+    void update(Setmeal setmeal);
 }
