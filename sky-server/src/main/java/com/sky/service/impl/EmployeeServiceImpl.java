@@ -9,9 +9,11 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
+import com.sky.exception.BaseException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
@@ -154,6 +156,27 @@ public class EmployeeServiceImpl implements EmployeeService {
     public void modify(Employee employee) {
         // 防止传密码过来更改员工密码
         employee.setPassword(null);
+        employeeMapper.update(employee);
+    }
+
+    /**
+     * 修改密码
+     * @param passwordEditDTO
+     */
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        Employee employee = employeeMapper.getById(passwordEditDTO.getEmpId());
+
+        // 检验old密码是否正确
+        String oldPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes());
+
+
+        if(!oldPassword.equals(employee.getPassword()) || passwordEditDTO.getNewPassword().isEmpty()){
+            throw new BaseException(MessageConstant.PASSWORD_ERROR);
+        }
+
+        // 修改密码
+        String newPassword = DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes());
+        employee.setPassword(newPassword);
         employeeMapper.update(employee);
     }
 }
