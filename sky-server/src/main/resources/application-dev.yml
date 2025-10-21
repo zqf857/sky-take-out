@@ -11,3 +11,8 @@ sky:
     secret-key: Weak123$
     bucket-name: sky-itcast
     access-key: zqf857
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: Dr.P3pper!
+    database: 10
